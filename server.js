@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-const user = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 
 dns.setServers(["8.8.8.8","1.1.1.1"]);
 
@@ -30,6 +30,27 @@ mongoose.connect(process.env.MONGO_URI)
     console.log("MongoDB connection failed :",error);
 
   });
+
+
+const authMiddleware = (req,res,next) =>{
+  const authHeader = req.headers.authorization;
+
+  if(!authHeader){
+    return res.status(401).json({
+      message:"access denied"
+    });
+  }
+  const token = authHeader.split(" ")[1];
+  try{
+    const decoded = jwt.verify(token, "mysecretkey");
+    req.user = decoded;
+    next();
+  } catch (error){
+    return res.status(401).json({
+      message:"invaild or expired token"
+    });
+  }
+};
 
 app.use(express.json());
   const foods = [
@@ -100,9 +121,10 @@ app.use(express.json());
 });
       app.post("/login",async (req,res) => {
           const loginData = req.body;
-          const existingUser = users.find(
-            item => item.email === loginData.email
-          );
+          const existingUser = await User.findOne({
+            email:loginData.email
+          });
+        
           if (!existingUser){
             return res.status(404).json({
               message:"user not found"
@@ -117,6 +139,22 @@ app.use(express.json());
                 message:"invalid password"
               });
             }
+            app.get("/profile", authMiddleware, async (req, res) => {
+  const user = await User.findOne({
+    email: req.user.email
+  }).select("-password");
+
+  if (!user) {
+    return res.status(404).json({
+      message: "user not found"
+    });
+  }
+
+  res.json({
+    message: "profile accessed successfully",
+    user: user
+  });
+});
           
       const token = jwt.sign(
         {email: existingUser.email},
