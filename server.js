@@ -53,30 +53,57 @@ const authMiddleware = (req,res,next) =>{
 };
 
 app.use(express.json());
-  const foods = [
-    {id:1,name:"chicken",calories:"40g"},
-    {id :2,name:"egg",calories:"30g"},
-    {id:3,name:"fish",calories:"29g"},
-    {id:4,name:"rice",calories:"130g"}
-    ];
-    app.get("/foods",(req,res) => {
+  const foodSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required:true
+    },
+    calories:{
+      type:String,
+      required:true
+    }
+  });
+  const Food = mongoose.model("Food",foodSchema);
+    app.get("/foods", async (req,res) => {
         const name=req.query.name;
-        const food=foods.find(item=> item.name.toUpperCase() === name.toUpperCase()
-      );
+        
+      try {
+        const food = await Food.findOne({
+          name: new RegExp(`^${name}$`,"i")
+        });
+
       if(!food){
         return res.status(404).json({
           message:"food not found"
         });
       }
-      res.json(food)
+      res.json(food);
+    }catch (error){
+      res.status(500).json({
+        message:"server error"
+      });
+    }
 });
-    app.post("/foods",(req,res) =>{
-      foods.push(req.body);
-      res.json({
-        message:"food added successfully!",
-        foods:foods
-      });
-      });
+    app.post("/foods", async (req,res)=> {
+      try{
+        const newFood = new Food({
+          name: req.body.name,
+          calories: req.body.calories
+        });
+        await newFood.save();
+
+        res.status(201).json({
+          message:"food added successfully!",
+          food: newFood
+        });
+      } catch (error) {
+        console.log("food creation error:",error);
+        res.status(500).json({
+          message:"server error",
+          error:error.message
+        });
+      }
+    });
       app.put("/foods/:id",(req,res)=>{
       const id = Number(req.params.id);
       const updatedFood=req.body;
