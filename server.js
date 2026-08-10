@@ -104,22 +104,41 @@ app.use(express.json());
         });
       }
     });
-      app.put("/foods/:id",(req,res)=>{
-      const id = Number(req.params.id);
-      const updatedFood=req.body;
-      const food =foods.find(item=> item.id ===id);
-      if (!food){
-        return res.status(404).json({
-          message:"food not found"
-        });
+    app.put("/foods/:id", async (req, res) => {
+  try {
+    const updatedFood = await Food.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        calories: req.body.calories
+      },
+      {
+        new: true,
+        runValidators: true
       }
-      food.name= updatedFood.name;
-      food.calories = updatedFood.calories;
-      res.json({
-        message:"food updated successfully",
-        food
+    );
+
+    if (!updatedFood) {
+      return res.status(404).json({
+        message: "food not found"
       });
-  });
+    }
+
+    res.json({
+      message: "food updated successfully",
+      food: updatedFood
+    });
+
+  } catch (error) {
+    console.log("Food update error:", error);
+
+    res.status(500).json({
+      message: "server error",
+      error: error.message
+    });
+  }
+});
+
   app.post("/signup", async (req, res) => {
   const newUser = req.body;
 
@@ -146,27 +165,44 @@ app.use(express.json());
     message: "account created successfully"
   });
 });
-      app.post("/login",async (req,res) => {
-          const loginData = req.body;
-          const existingUser = await User.findOne({
-            email:loginData.email
-          });
-        
-          if (!existingUser){
-            return res.status(404).json({
-              message:"user not found"
-          });
-        }
-            const isMatch = await bcrypt.compare(
-              loginData.password,
-              existingUser.password
-            );
-            if(!isMatch){
-              return res.status(401).json({
-                message:"invalid password"
-              });
-            }
-            app.get("/profile", authMiddleware, async (req, res) => {
+      app.post("/login", async (req, res) => {
+  const loginData = req.body;
+
+  const existingUser = await User.findOne({
+    email: loginData.email
+  });
+
+  if (!existingUser) {
+    return res.status(404).json({
+      message: "user not found"
+    });
+  }
+
+  const isMatch = await bcrypt.compare(
+    loginData.password,
+    existingUser.password
+  );
+
+  if (!isMatch) {
+    return res.status(401).json({
+      message: "invalid password"
+    });
+  }
+
+  const token = jwt.sign(
+    { email: existingUser.email },
+    "mysecretkey",
+    { expiresIn: "1h" }
+  );
+
+  return res.status(200).json({
+    message: "login successful",
+    token: token
+  });
+});
+
+
+app.get("/profile", authMiddleware, async (req, res) => {
   const user = await User.findOne({
     email: req.user.email
   }).select("-password");
@@ -181,7 +217,6 @@ app.use(express.json());
     message: "profile accessed successfully",
     user: user
   });
-});
           
       const token = jwt.sign(
         {email: existingUser.email},
