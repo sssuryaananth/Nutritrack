@@ -6,6 +6,20 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const app = express();
 
+const userSchema = new mongoose.Schema({
+  email:{
+    type:String,
+    required:true,
+    unique:true
+  },
+  password:{
+    type:String,
+    required:true
+  }
+});
+
+const user = mongoose.model("User",userSchema);
+
 dns.setServers(["8.8.8.8","1.1.1.1"]);
 
 mongoose.connect(process.env.MONGO_URI)
@@ -24,7 +38,6 @@ app.use(express.json());
     {id:3,name:"fish",calories:"29g"},
     {id:4,name:"rice",calories:"130g"}
     ];
-    const users=[];
     app.get("/foods",(req,res) => {
         const name=req.query.name;
         const food=foods.find(item=> item.name.toUpperCase() === name.toUpperCase()
@@ -59,24 +72,32 @@ app.use(express.json());
         food
       });
   });
-  app.post("/signup",async (req,res)=>{
-      const newUser = req.body;
-      const existingUser = users.find(
-        item => item.email === newUser.email
-      );
-      if (existingUser){
-        return res.status(400).json({
-          message:"email already exists"
-        });
-      }
-        const hashedPassword = await bcrypt.hash(newUser.password,10);
-        newUser.password = hashedPassword;
-        users.push(newUser);
-        return res.status(201).json({
-          message:"account created sucessfully",
-          user: newUser
-      });
+  app.post("/signup", async (req, res) => {
+  const newUser = req.body;
+
+  const existingUser = await User.findOne({
+    email: newUser.email
+  });
+
+  if (existingUser) {
+    return res.status(400).json({
+      message: "email already exists"
     });
+  }
+
+  const hashedPassword = await bcrypt.hash(newUser.password, 10);
+
+  const user = new User({
+    email: newUser.email,
+    password: hashedPassword
+  });
+
+  await user.save();
+
+  return res.status(201).json({
+    message: "account created successfully"
+  });
+});
       app.post("/login",async (req,res) => {
           const loginData = req.body;
           const existingUser = users.find(
