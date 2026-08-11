@@ -248,29 +248,63 @@ app.get("/profile", authMiddleware, async (req, res) => {
                 token: token
                 });
               });
-              app.post("/meals",authMiddleware,async (req,res) =>{
-                try{
-                  const {foodName,quantity,calories} = req.body;
-                  const newMeal = new Meal({
-                    userEmail:req.user.email,
-                    foodName:foodName,
-                    quantity:quantity,
-                    calories:calories
-                  });
-                  await newMeal.save();
-
-                  res.status(201).json({
-                    message:"meal added successfully",
-                    meal:newMeal
-                  });
-                } catch (error){
-                  console.log("meal creation error:",error);
-                  res.status(500).json({
-                    message:"server error",
-                    error:error.message
+  app.post("/meals",authMiddleware,async(req,res)=>{
+              try{
+                const{foodName,quantity} = req.body;
+                console.log("food requested",foodName);
+                const food = await Food.findOne({
+                  name:foodName
+                });
+                console.log("food found:",food);
+                if(!food) {
+                  return res.status(404).json({
+                    message:"food not found"
                   });
                 }
-              });
+                const caloriesPer100g = Number(
+                  food.calories.replace("g","")
+                );
+                const totalCalories = (caloriesPer100g * quantity) /100;
+                const newMeal = new Meal({
+                  userEmail:req.user.email,
+                  foodName:food.name,
+                  quantity:quantity,
+                  calories:totalCalories
+                });
+                await newMeal.save();
+                res.status(201).json({
+                  message:"meal added successfully",
+                  meal:newMeal
+                });
+              }catch (error){
+        
+                console.log("meal creation error:",error);
+                res.status(500).json({
+                  message:"server error",
+                  error:error.message
+                });
+              }
+            });
+              app.get("/meals", authMiddleware, async (req, res) => {
+  try {
+    const userMeals = await Meal.find({
+      userEmail: req.user.email
+    });
+
+    res.json({
+      message: "meals fetched successfully",
+      meals: userMeals
+    });
+
+  } catch (error) {
+    console.log("Meal fetch error:", error);
+
+    res.status(500).json({
+      message: "server error",
+      error: error.message
+    });
+  }
+});
   
     
 app.listen(5000,() => {
