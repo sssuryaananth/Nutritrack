@@ -65,23 +65,25 @@ app.use(express.json());
   });
   const Food = mongoose.model("Food",foodSchema);
   const mealSchema = new mongoose.Schema({
-      userEmail:{
-        type:String,
-        required:true
-      },
-      foodName:{
-        type:String,
-        required:true
-      },
-      quantity:{
-        type:Number,
-        required:true
-      },
-      calories:{
-        type:Number,
-        required:true
-      }
-    });
+    userEmail:{
+      type:String,
+      required:true
+    },
+    foodName:{
+      type:String,
+      required: true
+    },
+    quantity:{
+      type:Number,
+      requited:true
+    },
+    calories:{
+      type:Number,
+      required:true
+    }
+  },{
+    timestamps:true
+  });
     const Meal = mongoose.model("meal",mealSchema)
     app.get("/foods", async (req,res) => {
         const name=req.query.name;
@@ -302,6 +304,39 @@ app.get("/profile", authMiddleware, async (req, res) => {
     res.status(500).json({
       message: "server error",
       error: error.message
+    });
+  }
+});
+app.get("/meals/today",authMiddleware,async(req,res)=>{
+  try{
+    const startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23,59,59,999);
+
+    const meals = await Meal.find({
+      userEmail:req.user.email,
+      createdAt:{
+        $gte: startOfToday,
+        $lte: endOfToday
+      }
+    });
+    let totalCalories =0;
+
+    meals.forEach(meal =>{
+      totalCalories += meal.calories;
+    });
+    res.json({
+      message:"today's calories fetched successfully",
+      totalCalories:totalCalories,
+      meals:meals
+    });
+  } catch(error){
+    console.log("daily calories error:",error);
+    res.status(500).json({
+      message:"server error",
+      error:error.message
     });
   }
 });
