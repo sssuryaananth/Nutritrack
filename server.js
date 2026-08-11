@@ -64,6 +64,25 @@ app.use(express.json());
     }
   });
   const Food = mongoose.model("Food",foodSchema);
+  const mealSchema = new mongoose.Schema({
+      userEmail:{
+        type:String,
+        required:true
+      },
+      foodName:{
+        type:String,
+        required:true
+      },
+      quantity:{
+        type:Number,
+        required:true
+      },
+      calories:{
+        type:Number,
+        required:true
+      }
+    });
+    const Meal = mongoose.model("meal",mealSchema)
     app.get("/foods", async (req,res) => {
         const name=req.query.name;
         
@@ -104,6 +123,7 @@ app.use(express.json());
         });
       }
     });
+    
     app.put("/foods/:id", async (req, res) => {
   try {
     const updatedFood = await Food.findByIdAndUpdate(
@@ -227,6 +247,29 @@ app.get("/profile", authMiddleware, async (req, res) => {
                 message:"login successful",
                 token: token
                 });
+              });
+              app.post("/meals",authMiddleware,async (req,res) =>{
+                try{
+                  const {foodName,quantity,calories} = req.body;
+                  const newMeal = new Meal({
+                    userEmail:req.user.email,
+                    foodName:foodName,
+                    quantity:quantity,
+                    calories:calories
+                  });
+                  await newMeal.save();
+
+                  res.status(201).json({
+                    message:"meal added successfully",
+                    meal:newMeal
+                  });
+                } catch (error){
+                  console.log("meal creation error:",error);
+                  res.status(500).json({
+                    message:"server error",
+                    error:error.message
+                  });
+                }
               });
   
     
