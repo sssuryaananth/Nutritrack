@@ -340,6 +340,43 @@ app.get("/meals/today",authMiddleware,async(req,res)=>{
     });
   }
 });
+app.get("/dashboard",authMiddleware,async(req,res)=>{
+  try{
+    const startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0);
+    const endOfToday = new Date();
+    endOfToday.setHours(23,59,59,999);
+    
+    const meals = await Meal.find({
+      userEmail:req.user.email,
+      createdAt:{
+        $gte:startOfToday,
+        $lte:endOfToday
+      }
+    });
+    let totalCalories = 0;
+    let totalQuantity = 0;
+
+    meals.forEach(meal =>{
+      totalCalories += meal.calories;
+      totalQuantity += meal.quantity;
+
+    });
+    res.json({
+      message:"dashboard data fetched successfully",
+      totalCalories: totalCalories,
+      mealCount:meals.length,
+      totalQuantity:totalQuantity
+    });
+  } catch (error) {
+    console.log("Dashboard error:",error);
+
+    res.status(500).json({
+      message:"server error",
+      error:error.message
+    });
+  }
+});
   
     
 app.listen(5000,() => {
