@@ -4,8 +4,20 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const express = require("express");
+const cors = require("cors");
 const { stringify } = require("querystring");
 const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log("METHOD:", req.method);
+  console.log("URL:", req.url);
+  console.log("TYPE:", req.headers["content-type"]);
+  console.log("BODY AFTER PARSING:", req.body);
+
+  next();
+});
 
 const userSchema = new mongoose.Schema({
   email:{
@@ -57,7 +69,6 @@ const authMiddleware = (req,res,next) =>{
   }
 };
 
-app.use(express.json());
   const foodSchema = new mongoose.Schema({
     name: {
       type: String,
@@ -197,8 +208,9 @@ app.use(express.json());
   });
 });
       app.post("/login", async (req, res) => {
-  const loginData = req.body;
+  console.log("LOGIN BODY:", req.body);
 
+  const loginData = req.body;
   const existingUser = await User.findOne({
     email: loginData.email
   });

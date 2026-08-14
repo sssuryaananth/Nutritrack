@@ -1,44 +1,69 @@
+import Login from "./pages/login";
+import { Routes, Route, Link} from "react-router-dom";
 import "./App.css";
-function App(){
+
+function LandingPage() {
   return (
-    <div className ="app">\
-    <nav className ="logo">
-      <div className="logo">
-        <span className="logo-mark">N</span>
-        <span>NUTRITRACK</span>
-      </div>
-      <button className="login-button">LOG IN</button>
-    </nav>
-    <main className="hero">
-      <div className="hero-content">
-        <p className="eyebrow">your Body. Your Data. Your Control.</p>
-        <h1>
-          Fuel Smarter.
-          <br/>
-          Live stronger.
-        </h1>
-        <p className="hero-text">
-          Track Your meals, understand your nutrition,and take control of every calorie.
-        </p>
-        <div className="hero-buttons">
-          <button className="primary-buttons">START TRACKING</button>
-          <button className="secondary-button">EXPLORE MORE</button>
+    <div className="app">
+      <nav className="navbar">
+        <div className="logo">
+          <span className="logo-mark">N</span>
+          <span>NUTRITRACK</span>
         </div>
-      </div>
-      <div className="hero-card">
-        <p className="card-label">TODAYS FUEL</p>
-        <h2>1,320</h2>
-        <p className="kcal">kcal Consumed</p>
-        <div className="progress-track">
-          <div className="progress-fill"></div>
+
+        <Link to="/login" className="login-button">
+          LOG IN
+    </Link>
+      </nav>
+
+      <main className="hero">
+        <div className="hero-content">
+          <p className="eyebrow">YOUR BODY. YOUR DATA. YOUR CONTROL.</p>
+
+          <h1>
+            Fuel smarter.
+            <br />
+            Live stronger.
+          </h1>
+
+          <p className="hero-text">
+            Track your meals, understand your nutrition, and take control
+            of every calorie.
+          </p>
+
+          <div className="hero-buttons">
+            <Link to="/login" className="primary-button">
+              START TRACKING
+          </Link>
+            <button className="secondary-button">EXPLORE MORE</button>
+          </div>
         </div>
-        <div className="card-bottom">
-          <span>53% COMPLETE</span>
-          <span>1,1800 LEFT</span>
+
+        <div className="hero-card">
+          <p className="card-label">TODAY'S FUEL</p>
+          <h2>1,320</h2>
+          <p className="kcal">KCAL CONSUMED</p>
+
+          <div className="progress-track">
+            <div className="progress-fill"></div>
+          </div>
+
+          <div className="card-bottom">
+            <span>53% COMPLETE</span>
+            <span>1,180 LEFT</span>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path = "/login" element={<Login/>}/>
+    </Routes>
   );
 }
 
