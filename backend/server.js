@@ -211,32 +211,37 @@ const authMiddleware = (req,res,next) =>{
   console.log("LOGIN BODY:", req.body);
 
   const loginData = req.body;
+  console.log("1.Looking for user....");
   const existingUser = await User.findOne({
     email: loginData.email
   });
+  console.log("2.user result:",existingUser ? "FOUND": "NOT FOUND");
 
   if (!existingUser) {
     return res.status(404).json({
       message: "user not found"
     });
   }
-
+  console.log("3.checking password....");
   const isMatch = await bcrypt.compare(
     loginData.password,
     existingUser.password
   );
+  console.log("4.password match:",isMatch);
 
   if (!isMatch) {
     return res.status(401).json({
       message: "invalid password"
     });
   }
-
+  
   const token = jwt.sign(
     { email: existingUser.email },
     "mysecretkey",
     { expiresIn: "7d" }
   );
+  console.log("6. token created successfully");
+  console.log("7.sending successful response....");
 
   return res.status(200).json({
     message: "login successful",

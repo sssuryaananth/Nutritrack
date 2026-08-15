@@ -1,3 +1,4 @@
+import Dashboard from "./pages/Dashboard";
 import Login from "./pages/login";
 import { Routes, Route, Link} from "react-router-dom";
 import "./App.css";
@@ -63,6 +64,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path = "/login" element={<Login/>}/>
+      <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
   );
 }

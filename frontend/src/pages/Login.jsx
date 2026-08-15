@@ -1,7 +1,9 @@
 import{ useState } from "react";
+import {useNavigate} from "react-router-dom"
 function Login(){
   const [email,setEmail] = useState("");
   const [password,setPassword]=useState("");
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -15,10 +17,15 @@ function Login(){
     password: password,
   }),
 });
-    const data = await response.text();
+    const data = await response.json();
 
-console.log("Status:", response.status);
-console.log("Response:", data);
+console.log(data);
+
+if (response.ok) {
+  localStorage.setItem("token", data.token);
+  console.log("Token saved!");
+  navigate("/dashboard");
+}
   };
   return (
     <div className="auth-page">
