@@ -8,16 +8,17 @@ function Dashboard() {
   const [mealType, setMealType] = useState("Breakfast");
   const [meals, setMeals] = useState([]);
   const [foods,setFoods] = useState([]);
-  const [calorieGoal,setCalorieGoal] = useState(2000);
+  const [calorieGoal,setCalorieGoal] = useState(null);
   const [editingMeal,setEditingMeal]=useState(null);
 
-  const totalCalories = meals.reduce((total,meal)=>{
-    return total + meal.calories;
-  },0);
-  const remainingCalories = Math.max(
-    calorieGoal - totalCalories,
-    0
-  );
+  const totalCalories = meals.reduce((total, meal) => {
+  return total + meal.calories;
+}, 0);
+
+const remainingCalories =
+  calorieGoal !== null
+    ? Math.max(calorieGoal - totalCalories, 0)
+    : 0;
 
   const navigate = useNavigate();
 
@@ -25,6 +26,32 @@ function Dashboard() {
     localStorage.removeItem("token");
     navigate("/login");
   };
+  const handleSaveCalorieGoal = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    "http://localhost:5000/calorie-goal",
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        dailyCalorieGoal: calorieGoal,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (response.ok) {
+    alert("Calorie goal saved successfully!");
+    setCalorieGoal(data.dailyCalorieGoal);
+  } else {
+    alert(data.message);
+  }
+};
 
   const fetchMeals = async () => {
     const token = localStorage.getItem("token");
@@ -158,6 +185,7 @@ const handleDeleteMeal = async (mealId) => {
 
       if (response.ok) {
         setUser(data.user);
+        setCalorieGoal(data.user.dailyCalorieGoal);
       }
     };
 
@@ -175,9 +203,13 @@ const handleDeleteMeal = async (mealId) => {
 
 <input
   type="number"
-  value={calorieGoal}
+  value={calorieGoal ?? ""}
   onChange={(e) => setCalorieGoal(Number(e.target.value))}
 />
+
+<button onClick={handleSaveCalorieGoal}>
+  SAVE GOAL
+</button>
       <button onClick={handleLogout}>LOG OUT</button>
 
       {user ? (

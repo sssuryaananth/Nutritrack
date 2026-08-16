@@ -125,6 +125,35 @@ const authMiddleware = (req,res,next) =>{
       });
     }
 });
+app.put("/calorie-goal", authMiddleware, async (req, res) => {
+  try {
+    const { dailyCalorieGoal } = req.body;
+
+    if (!dailyCalorieGoal || Number(dailyCalorieGoal) <= 0) {
+      return res.status(400).json({
+        message: "Please enter a valid calorie goal"
+      });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { email: req.user.email },
+      { dailyCalorieGoal: Number(dailyCalorieGoal) },
+      { new: true }
+    );
+
+    res.json({
+      message: "Calorie goal updated successfully",
+      dailyCalorieGoal: user.dailyCalorieGoal
+    });
+  } catch (error) {
+    console.log("Calorie goal update error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
+  }
+});
     app.post("/foods", async (req,res)=> {
       try{
         const newFood = new Food({
