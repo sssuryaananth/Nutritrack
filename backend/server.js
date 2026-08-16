@@ -365,37 +365,59 @@ app.delete("/meals/:id", authMiddleware, async (req, res) => {
     });
   }
 });
-app.put("/meals/:id",authMiddleware,async(req,res)=>{
-  try{
+app.put("/meals/:id", authMiddleware, async (req, res) => {
+  try {
     const meal = await Meal.findOne({
-      _id:req.params.id,
-      userEmail:req.user.email
+      _id: req.params.id,
+      userEmail: req.user.email
     });
-    if(!meal){
+
+    if (!meal) {
       return res.status(404).json({
-        message:"meal not found"
+        message: "meal not found"
       });
     }
-    if (req.body.quantity !== undefined){
-      meal.quantity = req.body.quantity;
+
+    // Update quantity and recalculate calories
+    if (req.body.quantity !== undefined) {
+      const food = await Food.findOne({
+        name: meal.foodName
+      });
+
+      if (!food) {
+        return res.status(404).json({
+          message: "food not found"
+        });
+      }
+
+      const caloriesPer100g = Number(
+        food.calories.replace("g", "")
+      );
+
+      const newQuantity = Number(req.body.quantity);
+
+      meal.quantity = newQuantity;
+      meal.calories = (caloriesPer100g * newQuantity) / 100;
     }
-    if(req.body.calories !==undefined){
-      meal.calories = req.body.calories;
-    }
-    if(req.body.mealType !== undefined){
+
+    // Update meal type
+    if (req.body.mealType !== undefined) {
       meal.mealType = req.body.mealType;
     }
-    await meal.save();
-    res.json({
-      message:"meal updated successfully",
-      meal:meal
-    });
-  }catch (error){
-    console.log("meal update error:",error);
 
-    res.status(500).json({
-      message:"server error",
-      error:error.message
+    await meal.save();
+
+    return res.json({
+      message: "meal updated successfully",
+      meal: meal
+    });
+
+  } catch (error) {
+    console.log("meal update error:", error);
+
+    return res.status(500).json({
+      message: "server error",
+      error: error.message
     });
   }
 });
