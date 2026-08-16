@@ -7,11 +7,17 @@ function Dashboard() {
   const [quantity, setQuantity] = useState("");
   const [mealType, setMealType] = useState("Breakfast");
   const [meals, setMeals] = useState([]);
+  const [foods,setFoods] = useState([]);
+  const [calorieGoal,setCalorieGoal] = useState(2000);
   const [editingMeal,setEditingMeal]=useState(null);
 
   const totalCalories = meals.reduce((total,meal)=>{
     return total + meal.calories;
   },0);
+  const remainingCalories = Math.max(
+    calorieGoal - totalCalories,
+    0
+  );
 
   const navigate = useNavigate();
 
@@ -37,9 +43,21 @@ const response = await fetch(
       setMeals(data.meals);
     }
   };
+  const fetchFoods = async () =>{
+    const response = await fetch("http://localhost:5000/foods");
+    const data = await response.json();
+    console.log("Foods:",data);
+    if (response.ok){
+      setFoods(data);
+    }
+  };
 
   const handleAddMeal = async (e) => {
   e.preventDefault();
+  if (!foodName || !quantity || Number(quantity) <= 0) {
+  alert("Please select a food and enter a valid quantity.");
+  return;
+}
 
   const token = localStorage.getItem("token");
 
@@ -145,13 +163,21 @@ const handleDeleteMeal = async (mealId) => {
 
     fetchProfile();
     fetchMeals();
+    fetchFoods();
   }, [navigate]);
 
   return (
     <div>
       <h1>Welcome to Nutritrack</h1>
-      <h2>Today's Calories: {totalCalories}</h2>
+      <h2>Today's Calories: {totalCalories}/{calorieGoal} Kcal</h2>
+      <p>Remaining:{remainingCalories} Kcal</p>
+      <label>Daily Calorie Goal: </label>
 
+<input
+  type="number"
+  value={calorieGoal}
+  onChange={(e) => setCalorieGoal(Number(e.target.value))}
+/>
       <button onClick={handleLogout}>LOG OUT</button>
 
       {user ? (
@@ -166,12 +192,18 @@ const handleDeleteMeal = async (mealId) => {
       <h2>Add Meal</h2>
 
       <form onSubmit={handleAddMeal}>
-        <input
-          type="text"
-          placeholder="Food name"
-          value={foodName}
-          onChange={(e) => setFoodName(e.target.value)}
-        />
+        <select
+  value={foodName}
+  onChange={(e) => setFoodName(e.target.value)}
+>
+  <option value="">Select Food</option>
+
+  {foods.map((food) => (
+    <option key={food._id} value={food.name}>
+      {food.name}
+    </option>
+  ))}
+</select>
 
         <input
           type="number"
