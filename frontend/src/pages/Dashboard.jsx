@@ -10,6 +10,7 @@ function Dashboard() {
   const [meals, setMeals] = useState([]);
   const [weeklyMeals,setWeeklyMeals] = useState([]);
   const [foods,setFoods] = useState([]);
+  const [foodSearch,setFoodSearch]=useState("");
   const [calorieGoal,setCalorieGoal] = useState(null);
   const [editingMeal,setEditingMeal]=useState(null);
   const [selectedDate,setSelectedDate]=useState(
@@ -313,13 +314,25 @@ const handleDeleteMeal = async (mealId) => {
       <div className = "section-card">
       <h2>Add Meal</h2>
       <form onSubmit={handleAddMeal}>
+        <input
+  type="text"
+  placeholder="Search food..."
+  value={foodSearch}
+  onChange={(e) => setFoodSearch(e.target.value)}
+/>
         <select
   value={foodName}
   onChange={(e) => setFoodName(e.target.value)}
 >
   <option value="">Select Food</option>
 
-  {foods.map((food) => (
+{foods
+  .filter((food) =>
+    food.name
+      .toLowerCase()
+      .startsWith(foodSearch.toLowerCase())
+  )
+  .map((food) => (
     <option key={food._id} value={food.name}>
       {food.name}
     </option>
