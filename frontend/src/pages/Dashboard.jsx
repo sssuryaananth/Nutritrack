@@ -388,18 +388,32 @@ const handleDeleteMeal = async (mealId) => {
   />
   <button onClick={fetchMeals}>VIEW MEALS</button>
   </div>
-  <div className="section-card">
-  <h2>Weekly Analytics</h2>
+ <div className="section-card">
+  <h2>Last 7 Days</h2>
 
-  {Object.keys(weeklyCalories).length === 0 ? (
-    <p>No meals found in the last 7 days.</p>
-  ) : (
-    Object.entries(weeklyCalories).map(([date, calories]) => (
-      <p key={date}>
-        {date}: <strong>{calories} Kcal</strong>
-      </p>
-    ))
-  )}
+  <div className="weekly-chart">
+    {last7Days.map((day) => (
+      <div className="chart-column" key={day.date}>
+        <div
+          className="chart-bar"
+          style={{
+            height: `${Math.min(
+              (day.calories / (calorieGoal || 2000)) * 180,
+              180
+            )}px`,
+          }}
+        >
+          <span>{day.calories}</span>
+        </div>
+
+        <p>
+  {new Date(day.date + "T00:00:00").toLocaleDateString("en-US", {
+    weekday: "short",
+  })}
+</p>
+      </div>
+    ))}
+  </div>
 </div>
       <h2>Your Meals</h2>
 

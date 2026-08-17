@@ -191,3 +191,43 @@ h1{
   border-radius: 10px;
   transition: width 0.4s ease;
 }
+.weekly-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  height: 260px;
+  padding: 30px 10px 10px;
+}
+
+.chart-column {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.chart-bar {
+  width: 100%;
+  max-width: 55px;
+  min-height: 3px;
+  background: #2563eb;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 5px;
+  transition: height 0.3s ease;
+}
+
+.chart-bar span {
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.chart-column p {
+  margin: 8px 0 0;
+  font-size: 12px;
+}
