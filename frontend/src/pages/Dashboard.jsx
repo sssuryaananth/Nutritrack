@@ -11,6 +11,8 @@ function Dashboard() {
   const [weeklyMeals,setWeeklyMeals] = useState([]);
   const [foods,setFoods] = useState([]);
   const [foodSearch,setFoodSearch]=useState("");
+  const [customFoodName, setCustomFoodName] = useState("");
+const [customFoodCalories, setCustomFoodCalories] = useState("");
   const [calorieGoal,setCalorieGoal] = useState(null);
   const [editingMeal,setEditingMeal]=useState(null);
   const [selectedDate,setSelectedDate]=useState(
@@ -162,6 +164,36 @@ const response = await fetch(
     setFoodName("");
     setQuantity("");
     fetchMeals();
+  } else {
+    alert(data.message);
+  }
+};
+const handleAddCustomFood = async (e) => {
+  e.preventDefault();
+
+  if (!customFoodName || !customFoodCalories) {
+    alert("Please enter food name and calories.");
+    return;
+  }
+
+  const response = await fetch("http://localhost:5000/foods", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: customFoodName,
+      calories: Number(customFoodCalories),
+    }),
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    alert("Custom food added successfully!");
+    setCustomFoodName("");
+    setCustomFoodCalories("");
+    fetchFoods();
   } else {
     alert(data.message);
   }
@@ -359,6 +391,27 @@ const handleDeleteMeal = async (mealId) => {
         <button type="submit">ADD MEAL</button>
       </form>
       </div>
+      <div className="section-card">
+  <h2>Add Custom Food</h2>
+
+  <form onSubmit={handleAddCustomFood}>
+    <input
+      type="text"
+      placeholder="Food name"
+      value={customFoodName}
+      onChange={(e) => setCustomFoodName(e.target.value)}
+    />
+
+    <input
+      type="number"
+      placeholder="Calories per 100g"
+      value={customFoodCalories}
+      onChange={(e) => setCustomFoodCalories(e.target.value)}
+    />
+
+    <button type="submit">ADD CUSTOM FOOD</button>
+  </form>
+</div>
       {editingMeal && (
   <div className="section-card">
     <h2>Edit Meal</h2>
