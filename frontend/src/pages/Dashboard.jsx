@@ -25,6 +25,11 @@ const remainingCalories =
     ? Math.max(calorieGoal - totalCalories, 0)
     : 0;
 
+const calorieProgress =
+  calorieGoal && calorieGoal > 0
+    ? Math.min((totalCalories / calorieGoal) * 100, 100)
+    : 0;
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -208,6 +213,7 @@ const handleDeleteMeal = async (mealId) => {
     <h2>{totalCalories} Kcal</h2>
   </div>
 
+
   <div className="stat-card">
     <p>Daily Goal</p>
     <h2>{calorieGoal ?? 0} Kcal</h2>
@@ -216,6 +222,19 @@ const handleDeleteMeal = async (mealId) => {
   <div className="stat-card">
     <p>Remaining</p>
     <h2>{remainingCalories} Kcal</h2>
+  </div>
+</div>
+<div className="progress-container">
+  <div className="progress-label">
+    <span>Daily Progress</span>
+    <span>{Math.round(calorieProgress)}%</span>
+  </div>
+
+  <div className="progress-bar">
+    <div
+      className="progress-fill"
+      style={{ width: `${calorieProgress}%` }}
+    ></div>
   </div>
 </div>
       

@@ -161,3 +161,33 @@ h1{
 .delete-btn:hover {
   background: #b91c1c;
 }
+.progress-container {
+  background: white;
+  padding: 20px;
+  margin: 20px 0 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 14px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: #2563eb;
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
