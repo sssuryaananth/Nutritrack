@@ -10,6 +10,10 @@ function Dashboard() {
   const [foods,setFoods] = useState([]);
   const [calorieGoal,setCalorieGoal] = useState(null);
   const [editingMeal,setEditingMeal]=useState(null);
+  const [selectedDate,setSelectedDate]=useState(
+    new Date().toISOString().split("T")[0]
+    );
+  
 
   const totalCalories = meals.reduce((total, meal) => {
   return total + meal.calories;
@@ -55,9 +59,9 @@ const remainingCalories =
 
   const fetchMeals = async () => {
     const token = localStorage.getItem("token");
-    const today = new Date().toISOString().split("T")[0];
+    const date = selectedDate;
 const response = await fetch(
-  `http://localhost:5000/meals?date=${today}`,
+  `http://localhost:5000/meals?date=${date}`,
   {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -289,6 +293,13 @@ const handleDeleteMeal = async (mealId) => {
     <button onClick={handleUpdateMeal}>UPDATE MEAL</button>
   </>
 )}
+<h2>Meal History</h2>
+<input
+  type="date"
+  value={selectedDate}
+  onChange={(e)=>setSelectedDate(e.target.value)}
+  />
+  <button onClick={fetchMeals}>VIEW MEALS</button>
       <h2>Your Meals</h2>
 
       {meals.length === 0 ? (
