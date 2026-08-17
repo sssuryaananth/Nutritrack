@@ -8,12 +8,14 @@ function Dashboard() {
   const [quantity, setQuantity] = useState("");
   const [mealType, setMealType] = useState("Breakfast");
   const [meals, setMeals] = useState([]);
+  const [weeklyMeals,setWeeklyMeals] = useState([]);
   const [foods,setFoods] = useState([]);
   const [calorieGoal,setCalorieGoal] = useState(null);
   const [editingMeal,setEditingMeal]=useState(null);
   const [selectedDate,setSelectedDate]=useState(
     new Date().toISOString().split("T")[0]
     );
+
   
 
   const totalCalories = meals.reduce((total, meal) => {
@@ -29,6 +31,27 @@ const calorieProgress =
   calorieGoal && calorieGoal > 0
     ? Math.min((totalCalories / calorieGoal) * 100, 100)
     : 0;
+    const weeklyCalories = {};
+
+weeklyMeals.forEach((meal) => {
+  const date = new Date(meal.createdAt).toISOString().split("T")[0];
+
+  if (!weeklyCalories[date]) {
+    weeklyCalories[date] = 0;
+  }
+
+  weeklyCalories[date] += Number(meal.calories);
+});
+const last7Days =[];
+for(let i= 6;i>=0; i--){
+  const date = new Date();
+  date.setDate(date.getDate() -i);
+  const dateString = date.toISOString().split("T")[0];
+  last7Days.push({
+    date:dateString,
+    calories:weeklyCalories[dateString] || 0,
+  });
+}
 
   const navigate = useNavigate();
 
@@ -88,7 +111,26 @@ const response = await fetch(
       setFoods(data);
     }
   };
+  const fetchWeeklyMeals = async () => {
+  const token = localStorage.getItem("token");
 
+  const response = await fetch(
+    "http://localhost:5000/analytics/weekly",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (response.ok) {
+    setWeeklyMeals(data.meals);
+  } else {
+    console.log(data.message);
+  }
+};
   const handleAddMeal = async (e) => {
   e.preventDefault();
   if (!foodName || !quantity || Number(quantity) <= 0) {
@@ -202,6 +244,7 @@ const handleDeleteMeal = async (mealId) => {
     fetchProfile();
     fetchMeals();
     fetchFoods();
+    fetchWeeklyMeals();
   }, [navigate]);
 
   return (
@@ -345,6 +388,19 @@ const handleDeleteMeal = async (mealId) => {
   />
   <button onClick={fetchMeals}>VIEW MEALS</button>
   </div>
+  <div className="section-card">
+  <h2>Weekly Analytics</h2>
+
+  {Object.keys(weeklyCalories).length === 0 ? (
+    <p>No meals found in the last 7 days.</p>
+  ) : (
+    Object.entries(weeklyCalories).map(([date, calories]) => (
+      <p key={date}>
+        {date}: <strong>{calories} Kcal</strong>
+      </p>
+    ))
+  )}
+</div>
       <h2>Your Meals</h2>
 
       {meals.length === 0 ? (

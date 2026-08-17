@@ -487,6 +487,29 @@ app.get("/meals/today", authMiddleware, async (req, res) => {
     });
   }
 });
+app.get("/analytics/weekly",authMiddleware,async(req,res)=>{
+  try{
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+
+    sevenDaysAgo.setDate(today.getDate()-6);
+    const meals = await Meal.find({
+      userEmail:req.user.email,
+      createdAt: {
+  $gte: sevenDaysAgo,
+  $lte: today,
+},
+    });
+    res.json({
+      meals,
+    });
+  }catch (error){
+    console.log("weekly analytics error:",error);
+    res.status(500).json({
+      message:"server error",
+    });
+  }
+});
 app.get("/dashboard", authMiddleware, async (req, res) => {
   try {
     const startOfToday = new Date();
