@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Dashboard.css";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -199,34 +200,56 @@ const handleDeleteMeal = async (mealId) => {
   }, [navigate]);
 
   return (
-    <div>
+    <div className="dashboard">
       <h1>Welcome to Nutritrack</h1>
-      <h2>Today's Calories: {totalCalories}/{calorieGoal} Kcal</h2>
-      <p>Remaining:{remainingCalories} Kcal</p>
-      <label>Daily Calorie Goal: </label>
+      <div className="calorie-stats">
+  <div className="stat-card">
+    <p>Consumed</p>
+    <h2>{totalCalories} Kcal</h2>
+  </div>
 
-<input
-  type="number"
-  value={calorieGoal ?? ""}
-  onChange={(e) => setCalorieGoal(Number(e.target.value))}
-/>
+  <div className="stat-card">
+    <p>Daily Goal</p>
+    <h2>{calorieGoal ?? 0} Kcal</h2>
+  </div>
 
-<button onClick={handleSaveCalorieGoal}>
-  SAVE GOAL
-</button>
-      <button onClick={handleLogout}>LOG OUT</button>
+  <div className="stat-card">
+    <p>Remaining</p>
+    <h2>{remainingCalories} Kcal</h2>
+  </div>
+</div>
+      
 
-      {user ? (
-        <>
-          <h2>Hello, {user.name}</h2>
-          <p>{user.email}</p>
-        </>
-      ) : (
-        <p>Loading profile...</p>
-      )}
+<div className="profile-card">
 
+  {user ? (
+    <>
+      <h2>Hello, {user.name}</h2>
+      <p>{user.email}</p>
+    </>
+  ) : (
+    <p>Loading profile...</p>
+  )}
+
+  <div className="goal-section">
+    <label>Daily Calorie Goal:</label>
+
+    <input
+      type="number"
+      value={calorieGoal ?? ""}
+      onChange={(e) => setCalorieGoal(Number(e.target.value))}
+    />
+
+    <button onClick={handleSaveCalorieGoal}>
+      SAVE GOAL
+    </button>
+  </div>
+
+  <button onClick={handleLogout}>LOG OUT</button>
+
+</div>
+      <div className = "section-card">
       <h2>Add Meal</h2>
-
       <form onSubmit={handleAddMeal}>
         <select
   value={foodName}
@@ -260,8 +283,9 @@ const handleDeleteMeal = async (mealId) => {
 
         <button type="submit">ADD MEAL</button>
       </form>
+      </div>
       {editingMeal && (
-  <>
+  <div className="section-card">
     <h2>Edit Meal</h2>
 
     <input
@@ -290,9 +314,10 @@ const handleDeleteMeal = async (mealId) => {
       <option>Snack</option>
     </select>
 
-    <button onClick={handleUpdateMeal}>UPDATE MEAL</button>
-  </>
+  <button onClick={handleUpdateMeal}>UPDATE MEAL</button>
+  </div>
 )}
+<div className="section-card">
 <h2>Meal History</h2>
 <input
   type="date"
@@ -300,24 +325,35 @@ const handleDeleteMeal = async (mealId) => {
   onChange={(e)=>setSelectedDate(e.target.value)}
   />
   <button onClick={fetchMeals}>VIEW MEALS</button>
+  </div>
       <h2>Your Meals</h2>
 
       {meals.length === 0 ? (
         <p>No meals added yet.</p>
       ) : (
         meals.map((meal) => (
-          <div key={meal._id}>
-            <h3>{meal.mealType}</h3>
-            <p>Food: {meal.foodName}</p>
-            <p>Quantity: {meal.quantity}g</p>
-            <p>Calories: {meal.calories}</p>
-            <button onClick={()=> handleEditMeal(meal)}>
-              EDIT
-            </button>
-            <button onClick={() => handleDeleteMeal(meal._id)}>
-  DELETE
-</button>
-          </div>
+<div key={meal._id} className="meal-card">
+  <h3>{meal.mealType}</h3>
+
+  <div className="meal-details">
+    <p><strong>Food:</strong> {meal.foodName}</p>
+    <p><strong>Quantity:</strong> {meal.quantity}g</p>
+    <p><strong>Calories:</strong> {meal.calories} Kcal</p>
+  </div>
+
+  <div className="meal-actions">
+    <button onClick={() => handleEditMeal(meal)}>
+      EDIT
+    </button>
+
+    <button
+      className="delete-btn"
+      onClick={() => handleDeleteMeal(meal._id)}
+    >
+      DELETE
+    </button>
+  </div>
+</div>
         ))
       )}
     </div>
