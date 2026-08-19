@@ -66,7 +66,7 @@ for(let i= 6;i>=0; i--){
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    "http://localhost:5000/calorie-goal",
+    "https://nutritrack-g4n6.onrender.com/calorie-goal",
     {
       method: "PUT",
       headers: {
@@ -93,7 +93,7 @@ for(let i= 6;i>=0; i--){
     const token = localStorage.getItem("token");
     const date = selectedDate;
 const response = await fetch(
-  `http://localhost:5000/meals?date=${date}`,
+  `https://nutritrack-g4n6.onrender.com/meals?date=${date}`,
   {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ const response = await fetch(
     }
   };
   const fetchFoods = async () =>{
-    const response = await fetch("http://localhost:5000/foods");
+    const response = await fetch("https://nutritrack-g4n6.onrender.com/foods");
     const data = await response.json();
     console.log("Foods:",data);
     if (response.ok){
@@ -118,7 +118,7 @@ const response = await fetch(
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    "http://localhost:5000/analytics/weekly",
+    "https://nutritrack-g4n6.onrender.com/analytics/weekly",
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ const response = await fetch(
 
   const token = localStorage.getItem("token");
 
-  const response = await fetch("http://localhost:5000/meals", {
+  const response = await fetch("https://nutritrack-g4n6.onrender.com/meals", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -176,7 +176,7 @@ const handleAddCustomFood = async (e) => {
     return;
   }
 
-  const response = await fetch("http://localhost:5000/foods", {
+  const response = await fetch("https://nutritrack-g4n6.onrender.com/foods", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -204,7 +204,7 @@ const handleEditMeal=(meal)=>{
 const handleUpdateMeal = async ()=>{
   const token = localStorage.getItem("token");
   const response = await fetch(
-    `http://localhost:5000/meals/${editingMeal._id}`,
+    `https://nutritrack-g4n6.onrender.com/meals/${editingMeal._id}`,
     {
       method:"PUT",
       headers:{
@@ -233,7 +233,7 @@ const handleDeleteMeal = async (mealId) => {
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    `http://localhost:5000/meals/${mealId}`,
+    `https://nutritrack-g4n6.onrender.com/meals/${mealId}`,
     {
       method: "DELETE",
       headers: {
@@ -260,7 +260,7 @@ const handleDeleteMeal = async (mealId) => {
     }
 
     const fetchProfile = async () => {
-      const response = await fetch("http://localhost:5000/profile", {
+      const response = await fetch("https://nutritrack-g4n6.onrender.com/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

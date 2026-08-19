@@ -237,47 +237,65 @@ app.put("/calorie-goal", authMiddleware, async (req, res) => {
   });
 });
       app.post("/login", async (req, res) => {
-  console.log("LOGIN BODY:", req.body);
+  try {
+    console.log("LOGIN BODY:", req.body);
 
-  const loginData = req.body;
-  console.log("1.Looking for user....");
-  const existingUser = await User.findOne({
-    email: loginData.email
-  });
-  console.log("2.user result:",existingUser ? "FOUND": "NOT FOUND");
+    const loginData = req.body;
 
-  if (!existingUser) {
-    return res.status(404).json({
-      message: "user not found"
+    console.log("1. Looking for user....");
+
+    const existingUser = await User.findOne({
+      email: loginData.email
+    });
+
+    console.log(
+      "2. User result:",
+      existingUser ? "FOUND" : "NOT FOUND"
+    );
+
+    if (!existingUser) {
+      return res.status(404).json({
+        message: "user not found"
+      });
+    }
+
+    console.log("3. Checking password....");
+
+    const isMatch = await bcrypt.compare(
+      loginData.password,
+      existingUser.password
+    );
+
+    console.log("4. Password match:", isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "invalid password"
+      });
+    }
+
+    const token = jwt.sign(
+      { email: existingUser.email },
+      "mysecretkey",
+      { expiresIn: "7d" }
+    );
+
+    console.log("6. Token created successfully");
+
+    return res.status(200).json({
+      message: "login successful",
+      token: token
+    });
+
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+
+    return res.status(500).json({
+      message: "login server error",
+      error: error.message
     });
   }
-  console.log("3.checking password....");
-  const isMatch = await bcrypt.compare(
-    loginData.password,
-    existingUser.password
-  );
-  console.log("4.password match:",isMatch);
-
-  if (!isMatch) {
-    return res.status(401).json({
-      message: "invalid password"
-    });
-  }
-  
-  const token = jwt.sign(
-    { email: existingUser.email },
-    "mysecretkey",
-    { expiresIn: "7d" }
-  );
-  console.log("6. token created successfully");
-  console.log("7.sending successful response....");
-
-  return res.status(200).json({
-    message: "login successful",
-    token: token
-  });
 });
-
 
 app.get("/profile", authMiddleware, async (req, res) => {
   const user = await User.findOne({
