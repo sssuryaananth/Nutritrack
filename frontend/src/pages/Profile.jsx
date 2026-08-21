@@ -24,13 +24,15 @@ function Profile() {
     );
 
     const data = await response.json();
+    console.log("Profile response:",data);
+    console.log("SAVE RESPONSE:",data);
 
     if (response.ok) {
       setUser(data.user);
-      setName(data.user.name);
+      setName(data.user?.name ??"");
       alert("Profile updated successfully!");
     } else {
-      alert(data.message);
+      alert(data.message || "profile updated failed");
     }
   };
 
@@ -56,7 +58,7 @@ function Profile() {
 
       if (response.ok) {
         setUser(data.user);
-        setName(data.user.name ||"");
+        setName(data.user?.name ??"");
       }
     };
 
@@ -76,7 +78,7 @@ function Profile() {
       <label>Name</label>
       <input
         type="text"
-        value={name}
+        value={name ??""}
         onChange={(e) => setName(e.target.value)}
       />
 

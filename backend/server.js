@@ -20,6 +20,10 @@ app.use((req, res, next) => {
 });
 
 const userSchema = new mongoose.Schema({
+  name:{
+    type:String,
+    default:""
+  },
   email:{
     type:String,
     required:true,
@@ -333,11 +337,13 @@ app.put("/profile", authMiddleware, async (req, res) => {
       });
     }
 
-    const updatedUser = await User.findOneAndUpdate(
-      { email: req.user.email },
-      { name: name.trim() },
-      { new: true }
-    );
+const updatedUser = await User.findOneAndUpdate(
+  { email: req.user.email },
+  { name: name.trim() },
+  { returnDocument: "after" }
+);
+
+console.log("UPDATED USER:", updatedUser);
 
     res.json({
       message: "Profile updated successfully",
