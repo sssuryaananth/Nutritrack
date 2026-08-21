@@ -298,27 +298,32 @@ app.put("/calorie-goal", authMiddleware, async (req, res) => {
 });
 
 app.get("/profile", authMiddleware, async (req, res) => {
-  const user = await User.findOne({
-    email: req.user.email
-  }).select("-password");
+  try {
+    const user = await User.findOne({
+      email: req.user.email
+    }).select("-password");
 
-  if (!user) {
-    return res.status(404).json({
-      message: "user not found"
+    if (!user) {
+      return res.status(404).json({
+        message: "user not found"
+      });
+    }
+
+    res.json({
+      message: "profile accessed successfully",
+      user: user
+    });
+  } catch (error) {
+    console.log("Profile fetch error:", error);
+
+    res.status(500).json({
+      message: "Server error"
     });
   }
+});
 
-  res.json({
-    message: "profile accessed successfully",
-    user: user
-  });
-          
-      return res.status(200).json({
-                message:"login successful",
-                token: token
-                });
-              });
-              app.put("/profile", authMiddleware, async (req, res) => {
+
+app.put("/profile", authMiddleware, async (req, res) => {
   try {
     const { name } = req.body;
 

@@ -56,7 +56,7 @@ function Profile() {
 
       if (response.ok) {
         setUser(data.user);
-        setName(data.user.name);
+        setName(data.user.name ||"");
       }
     };
 
