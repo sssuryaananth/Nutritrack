@@ -339,6 +339,9 @@ const handleDeleteMeal = async (mealId) => {
       SAVE GOAL
     </button>
   </div>
+  <button onClick={() => navigate("/profile")}>
+  MY PROFILE
+</button>
 
   <button onClick={handleLogout}>LOG OUT</button>
 

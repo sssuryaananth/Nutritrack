@@ -1,6 +1,7 @@
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import { Routes, Route, Link} from "react-router-dom";
+import Profile from "./pages/Profile";
+import { Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 
 function LandingPage() {
@@ -63,8 +64,9 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path = "/Login" element={<Login/>}/>
+      <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }

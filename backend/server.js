@@ -318,6 +318,35 @@ app.get("/profile", authMiddleware, async (req, res) => {
                 token: token
                 });
               });
+              app.put("/profile", authMiddleware, async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    if (!name || name.trim() === "") {
+      return res.status(400).json({
+        message: "Name cannot be empty"
+      });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email: req.user.email },
+      { name: name.trim() },
+      { new: true }
+    );
+
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser
+    });
+
+  } catch (error) {
+    console.log("Profile update error:", error);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
+});
   app.post("/meals",authMiddleware,async(req,res)=>{
               try{
                 const{foodName,quantity} = req.body;
