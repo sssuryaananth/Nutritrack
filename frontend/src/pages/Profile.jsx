@@ -24,15 +24,14 @@ function Profile() {
     );
 
     const data = await response.json();
-    console.log("Profile response:",data);
-    console.log("SAVE RESPONSE:",data);
+    console.log("SAVE RESPONSE:", data);
 
     if (response.ok) {
       setUser(data.user);
-      setName(data.user?.name ??"");
+      setName(data.user?.name ?? "");
       alert("Profile updated successfully!");
     } else {
-      alert(data.message || "profile updated failed");
+      alert(data.message || "Profile update failed");
     }
   };
 
@@ -58,7 +57,7 @@ function Profile() {
 
       if (response.ok) {
         setUser(data.user);
-        setName(data.user?.name ??"");
+        setName(data.user?.name ?? "");
       }
     };
 
@@ -70,27 +69,32 @@ function Profile() {
   }
 
   return (
-    <div>
-      <h1>My Profile</h1>
+    <div className="profile-page">
+      <div className="profile-card">
+        <h1>My Profile</h1>
 
-      <h2>Profile Details</h2>
+        <h2>Profile Details</h2>
 
-      <label>Name</label>
-      <input
-        type="text"
-        value={name ??""}
-        onChange={(e) => setName(e.target.value)}
-      />
+        <label>Name</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-      <p>Email: {user.email}</p>
+        <p>Email: {user.email}</p>
 
-      <button onClick={handleSaveChanges}>
-        SAVE CHANGES
-      </button>
+        <button onClick={handleSaveChanges}>
+          SAVE CHANGES
+        </button>
 
-      <button onClick={() => navigate("/dashboard")}>
-        BACK TO DASHBOARD
-      </button>
+        <button
+          className="back-button"
+          onClick={() => navigate("/dashboard")}
+        >
+          BACK TO DASHBOARD
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,10 +1,16 @@
 :root {
-  font-family:Arial,Helvetica,sans-serif;
-  color:#f5f7fa;
-  background:#101418;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #f5f7fa;
+  background-color: #101418;
 }
-body{
-  margin:0;
-  min-width:320px;
-  min-height:100vh;
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #101418 !important;
+  color: #f5f7fa !important;
 }
