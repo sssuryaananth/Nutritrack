@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Profile() {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
+  const [dailyCalorieGoal,setDailyCalorieGoal]=useState("");
   const navigate = useNavigate();
 
   const handleSaveChanges = async () => {
@@ -19,6 +20,7 @@ function Profile() {
         },
         body: JSON.stringify({
           name: name,
+          dailyCalorieGoal:Number(dailyCalorieGoal),
         }),
       }
     );
@@ -58,6 +60,8 @@ function Profile() {
       if (response.ok) {
         setUser(data.user);
         setName(data.user?.name ?? "");
+        setDailyCalorieGoal(data.user?.dailyCalorieGoal ??"");
+        alert("profile updated successfully");
       }
     };
 
@@ -80,6 +84,13 @@ function Profile() {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+        <label>Daily calorie</label>
+        <input 
+        type="number"
+        value={dailyCalorieGoal}
+        onChange={(e)=>setDailyCalorieGoal(e.target.value)}
+        placeholder="Enter daily calorie goal"
         />
 
         <p>Email: {user.email}</p>

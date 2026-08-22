@@ -282,7 +282,9 @@ const handleDeleteMeal = async (mealId) => {
 
   return (
     <div className="dashboard">
-      <h1>Welcome to Nutritrack</h1>
+      <h1>
+  Welcome back, {user?.name || "there"} 👋
+</h1>
       <div className="calorie-stats">
   <div className="stat-card">
     <p>Consumed</p>

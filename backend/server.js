@@ -329,7 +329,7 @@ app.get("/profile", authMiddleware, async (req, res) => {
 
 app.put("/profile", authMiddleware, async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, dailyCalorieGoal } = req.body;
 
     if (!name || name.trim() === "") {
       return res.status(400).json({
@@ -337,13 +337,22 @@ app.put("/profile", authMiddleware, async (req, res) => {
       });
     }
 
-const updatedUser = await User.findOneAndUpdate(
-  { email: req.user.email },
-  { name: name.trim() },
-  { returnDocument: "after" }
-);
+    if (!dailyCalorieGoal || Number(dailyCalorieGoal) <= 0) {
+      return res.status(400).json({
+        message: "Daily calorie goal must be greater than 0"
+      });
+    }
 
-console.log("UPDATED USER:", updatedUser);
+    const updatedUser = await User.findOneAndUpdate(
+      { email: req.user.email },
+      {
+        name: name.trim(),
+        dailyCalorieGoal: Number(dailyCalorieGoal)
+      },
+      {
+        returnDocument: "after"
+      }
+    ).select("-password");
 
     res.json({
       message: "Profile updated successfully",
