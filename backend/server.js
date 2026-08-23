@@ -101,8 +101,6 @@ const foodSchema = new mongoose.Schema({
 });
 
 const Food = mongoose.model("Food", foodSchema);
-
-const Food = mongoose.model("Food", foodSchema);
   const mealSchema = new mongoose.Schema({
     userEmail:{
       type:String,
@@ -189,7 +187,7 @@ app.put("/calorie-goal", authMiddleware, async (req, res) => {
     });
   }
 });
-   app.post("/foods", async (req, res) => {
+app.post("/foods", async (req, res) => {
   try {
     console.log("🔥 FOOD REQUEST:", req.body);
 
