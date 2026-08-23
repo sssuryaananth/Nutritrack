@@ -279,7 +279,7 @@ app.put("/foods/:id", async (req, res) => {
   await user.save();
 
   return res.status(201).json({
-    message: "account created successfully"
+    message: "Account Created Successfully"
   });
 });
       app.post("/login", async (req, res) => {
