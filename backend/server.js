@@ -189,34 +189,41 @@ app.put("/calorie-goal", authMiddleware, async (req, res) => {
     });
   }
 });
-    app.post("/foods", async (req,res)=> {
-      try{
-const { name, calories, protein, carbs, fat } = req.body;
+   app.post("/foods", async (req, res) => {
+  try {
+    console.log("🔥 FOOD REQUEST:", req.body);
 
-const newFood = new Food({
-  name,
-  calories: Number(calories),
-  protein: Number(protein) || 0,
-  carbs: Number(carbs) || 0,
-  fat: Number(fat) || 0
-});
+    const { name, calories, protein, carbs, fat } = req.body;
 
-await newFood.save();
-
-res.status(201).json({
-  message: "Food added successfully",
-  food: newFood
-});
-      } catch (error) {
-        console.log("food creation error:",error);
-        res.status(500).json({
-          message:"server error",
-          error:error.message
-        });
-      }
+    const newFood = new Food({
+      name: name,
+      calories: Number(calories),
+      protein: Number(protein),
+      carbs: Number(carbs),
+      fat: Number(fat)
     });
-    
-    app.put("/foods/:id", async (req, res) => {
+
+    console.log("🔥 FOOD BEFORE SAVE:", newFood);
+
+    const savedFood = await newFood.save();
+
+    console.log("🔥 FOOD SAVED:", savedFood);
+
+    res.status(201).json({
+      message: "Food added successfully",
+      food: savedFood
+    });
+
+  } catch (error) {
+    console.log("🔥 FOOD SAVE ERROR:", error);
+
+    res.status(500).json({
+      message: "server error",
+      error: error.message
+    });
+  }
+});
+app.put("/foods/:id", async (req, res) => {
   try {
     const updatedFood = await Food.findByIdAndUpdate(
       req.params.id,
