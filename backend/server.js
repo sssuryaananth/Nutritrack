@@ -73,17 +73,36 @@ const authMiddleware = (req,res,next) =>{
   }
 };
 
-  const foodSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      required:true
-    },
-    calories:{
-      type:String,
-      required:true
-    }
-  });
-  const Food = mongoose.model("Food",foodSchema);
+const foodSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+
+  calories: {
+    type: Number,
+    required: true
+  },
+
+  protein: {
+    type: Number,
+    default: 0
+  },
+
+  carbs: {
+    type: Number,
+    default: 0
+  },
+
+  fat: {
+    type: Number,
+    default: 0
+  }
+});
+
+const Food = mongoose.model("Food", foodSchema);
+
+const Food = mongoose.model("Food", foodSchema);
   const mealSchema = new mongoose.Schema({
     userEmail:{
       type:String,
@@ -101,6 +120,18 @@ const authMiddleware = (req,res,next) =>{
       type:Number,
       required:true
     },
+    protein:{
+      type:Number,
+      default:0
+    },
+    carbs:{
+      type:Number,
+      default:0
+    },
+    fat:{
+      type:Number,
+      default:0
+    },
     mealType:{
       type:String,
       enum:["Breakfast","Lunch","Dinner","Snack"],
@@ -110,24 +141,24 @@ const authMiddleware = (req,res,next) =>{
     timestamps:true
   });
     const Meal = mongoose.model("meal",mealSchema)
-    app.get("/foods", async (req,res) => {
-        const name=req.query.name;
-        
-      try {
-        const food = await Food.find({
-          name:new RegExp(name,"i")
-        });
-      if(food.length === 0){
-        return res.status(404).json({
-          message:"food not found"
-        });
-      }
-      res.json(food);
-    }catch (error){
-      res.status(500).json({
-        message:"server error"
-      });
-    }
+    app.get("/foods", async (req, res) => {
+  const name = req.query.name || "";
+
+  try {
+    const food = await Food.find({
+      name: new RegExp(name, "i")
+    });
+
+    res.json(food);
+
+  } catch (error) {
+    console.log("food fetch error:", error);
+
+    res.status(500).json({
+      message: "server error",
+      error: error.message
+    });
+  }
 });
 app.put("/calorie-goal", authMiddleware, async (req, res) => {
   try {
@@ -160,16 +191,22 @@ app.put("/calorie-goal", authMiddleware, async (req, res) => {
 });
     app.post("/foods", async (req,res)=> {
       try{
-        const newFood = new Food({
-          name: req.body.name,
-          calories: req.body.calories
-        });
-        await newFood.save();
+const { name, calories, protein, carbs, fat } = req.body;
 
-        res.status(201).json({
-          message:"food added successfully!",
-          food: newFood
-        });
+const newFood = new Food({
+  name,
+  calories: Number(calories),
+  protein: Number(protein) || 0,
+  carbs: Number(carbs) || 0,
+  fat: Number(fat) || 0
+});
+
+await newFood.save();
+
+res.status(201).json({
+  message: "Food added successfully",
+  food: newFood
+});
       } catch (error) {
         console.log("food creation error:",error);
         res.status(500).json({
@@ -367,44 +404,65 @@ app.put("/profile", authMiddleware, async (req, res) => {
     });
   }
 });
-  app.post("/meals",authMiddleware,async(req,res)=>{
-              try{
-                const{foodName,quantity} = req.body;
-                console.log("food requested",foodName);
-                const food = await Food.findOne({
-                  name:foodName
-                });
-                console.log("food found:",food);
-                if(!food) {
-                  return res.status(404).json({
-                    message:"food not found"
-                  });
-                }
-                const caloriesPer100g = Number(
-                  food.calories.replace("g","")
-                );
-                const totalCalories = (caloriesPer100g * quantity) /100;
-                const newMeal = new Meal({
-                  userEmail:req.user.email,
-                  foodName:food.name,
-                  quantity:quantity,
-                  calories:totalCalories,
-                  mealType:req.body.mealType
-                });
-                await newMeal.save();
-                res.status(201).json({
-                  message:"meal added successfully",
-                  meal:newMeal
-                });
-              }catch (error){
-        
-                console.log("meal creation error:",error);
-                res.status(500).json({
-                  message:"server error",
-                  error:error.message
-                });
-              }
-            });
+app.post("/meals", authMiddleware, async (req, res) => {
+  try {
+    const { foodName, quantity, mealType } = req.body;
+
+    console.log("Food requested:", foodName);
+    console.log("Quantity:", quantity);
+    console.log("Meal type:", mealType);
+
+    const food = await Food.findOne({
+      name: new RegExp(`^${foodName}$`, "i")
+    });
+
+    if (!food) {
+      return res.status(404).json({
+        message: "Food not found"
+      });
+    }
+
+    const calories =
+      (Number(food.calories) * Number(quantity)) / 100;
+
+    const protein =
+      (Number(food.protein) || 0) * Number(quantity) / 100;
+
+    const carbs =
+      (Number(food.carbs) || 0) * Number(quantity) / 100;
+
+    const fat =
+      (Number(food.fat) || 0) * Number(quantity) / 100;
+
+    const newMeal = new Meal({
+      userEmail: req.user.email,
+      foodName: food.name,
+      quantity: Number(quantity),
+      calories: Math.round(calories),
+      protein: Number(protein.toFixed(1)),
+      carbs: Number(carbs.toFixed(1)),
+      fat: Number(fat.toFixed(1)),
+      mealType
+    });
+
+    await newMeal.save();
+
+    console.log("Meal saved:", newMeal);
+
+    res.status(201).json({
+      message: "Meal added successfully",
+      meal: newMeal
+    });
+
+  } catch (error) {
+    console.log("Meal creation error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
+  }
+});
   app.get("/meals",authMiddleware,async(req,res)=>{
     try{
       const {date}=req.query;

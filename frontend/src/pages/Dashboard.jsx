@@ -3,16 +3,24 @@ import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
 function Dashboard() {
+  console.log("NEW DASHBOARD CODE IS RUNNING ")
+  function Dashboard(){
+    alert("NEW DASHBOARD FILE");
+  }
   const [user, setUser] = useState(null);
   const [foodName, setFoodName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [mealType, setMealType] = useState("Breakfast");
   const [meals, setMeals] = useState([]);
+  console.log("Meals Data:",meals)
   const [weeklyMeals,setWeeklyMeals] = useState([]);
   const [foods,setFoods] = useState([]);
   const [foodSearch,setFoodSearch]=useState("");
   const [customFoodName, setCustomFoodName] = useState("");
-const [customFoodCalories, setCustomFoodCalories] = useState("");
+  const [customFoodCalories, setCustomFoodCalories] = useState("");
+  const [customFoodProtein,setCustomFoodProtein]=useState("");
+  const [customFoodCarbs,setCustomFoodCarbs]=useState("");
+  const [customFoodFat,setCustomFoodFat] =useState("");
   const [calorieGoal,setCalorieGoal] = useState(null);
   const [editingMeal,setEditingMeal]=useState(null);
   const [selectedDate,setSelectedDate]=useState(
@@ -24,6 +32,19 @@ const [customFoodCalories, setCustomFoodCalories] = useState("");
   const totalCalories = meals.reduce((total, meal) => {
   return total + meal.calories;
 }, 0);
+  const totalProtein = meals.reduce(
+    (total,meal)=>total+Number(meal.protein || 0),
+    0
+  );
+  const totalCarbs = meals.reduce(
+    (total,meal)=>total+Number(meal.carbs || 0),
+    0
+  );
+  const totalFat = meals.reduce(
+    (total,meal)=> total+Number(meal.fat || 0),
+    0
+  );
+
 
 const remainingCalories =
   calorieGoal !== null
@@ -171,31 +192,49 @@ const response = await fetch(
 const handleAddCustomFood = async (e) => {
   e.preventDefault();
 
-  if (!customFoodName || !customFoodCalories) {
-    alert("Please enter food name and calories.");
-    return;
-  }
+  console.log("🔥 ADD FOOD CLICKED");
 
-  const response = await fetch("https://nutritrack-g4n6.onrender.com/foods", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: customFoodName,
-      calories: Number(customFoodCalories),
-    }),
+  console.log({
+    name: customFoodName,
+    calories: customFoodCalories,
+    protein: customFoodProtein,
+    carbs: customFoodCarbs,
+    fat: customFoodFat,
   });
+
+  const response = await fetch(
+    "https://nutritrack-g4n6.onrender.com/foods",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: customFoodName,
+        calories: Number(customFoodCalories),
+        protein: Number(customFoodProtein),
+        carbs: Number(customFoodCarbs),
+        fat: Number(customFoodFat),
+      }),
+    }
+  );
 
   const data = await response.json();
 
+  console.log("🔥 FOOD RESPONSE:", data);
+
   if (response.ok) {
     alert("Custom food added successfully!");
+
     setCustomFoodName("");
     setCustomFoodCalories("");
+    setCustomFoodProtein("");
+    setCustomFoodCarbs("");
+    setCustomFoodFat("");
+
     fetchFoods();
   } else {
-    alert(data.message);
+    alert(data.message || "Failed to add food");
   }
 };
 const handleEditMeal=(meal)=>{
@@ -290,6 +329,23 @@ const handleDeleteMeal = async (mealId) => {
     <p>Consumed</p>
     <h2>{totalCalories} Kcal</h2>
   </div>
+  <div className="macro-stats">
+
+  <div className="stat-card">
+    <p>Protein</p>
+    <h2>{totalProtein.toFixed(1)}g</h2>
+  </div>
+
+  <div className="stat-card">
+    <p>Carbs</p>
+    <h2>{totalCarbs.toFixed(1)}g</h2>
+  </div>
+
+  <div className="stat-card">
+    <p>Fat</p>
+    <h2>{totalFat.toFixed(1)}g</h2>
+  </div>
+</div>
 
 
   <div className="stat-card">
@@ -336,6 +392,7 @@ const handleDeleteMeal = async (mealId) => {
       value={calorieGoal ?? ""}
       onChange={(e) => setCalorieGoal(Number(e.target.value))}
     />
+    
 
     <button onClick={handleSaveCalorieGoal}>
       SAVE GOAL
@@ -399,23 +456,44 @@ const handleDeleteMeal = async (mealId) => {
       <div className="section-card">
   <h2>Add Custom Food</h2>
 
-  <form onSubmit={handleAddCustomFood}>
-    <input
-      type="text"
-      placeholder="Food name"
-      value={customFoodName}
-      onChange={(e) => setCustomFoodName(e.target.value)}
-    />
+<form onSubmit={handleAddCustomFood}>
+  <input
+    type="text"
+    placeholder="Food name"
+    value={customFoodName}
+    onChange={(e) => setCustomFoodName(e.target.value)}
+  />
 
-    <input
-      type="number"
-      placeholder="Calories per 100g"
-      value={customFoodCalories}
-      onChange={(e) => setCustomFoodCalories(e.target.value)}
-    />
+  <input
+    type="number"
+    placeholder="Calories per 100g"
+    value={customFoodCalories}
+    onChange={(e) => setCustomFoodCalories(e.target.value)}
+  />
 
-    <button type="submit">ADD CUSTOM FOOD</button>
-  </form>
+  <input
+    type="number"
+    placeholder="Protein per 100g (g)"
+    value={customFoodProtein}
+    onChange={(e) => setCustomFoodProtein(e.target.value)}
+  />
+
+  <input
+    type="number"
+    placeholder="Carbs per 100g (g)"
+    value={customFoodCarbs}
+    onChange={(e) => setCustomFoodCarbs(e.target.value)}
+  />
+
+  <input
+    type="number"
+    placeholder="Fat per 100g (g)"
+    value={customFoodFat}
+    onChange={(e) => setCustomFoodFat(e.target.value)}
+  />
+
+  <button type="submit">ADD FOOD</button>
+</form>
 </div>
       {editingMeal && (
   <div className="section-card">
@@ -459,7 +537,7 @@ const handleDeleteMeal = async (mealId) => {
   />
   <button onClick={fetchMeals}>VIEW MEALS</button>
   </div>
- <div className="section-card">
+<div className="section-card">
   <h2>Last 7 Days</h2>
 
   <div className="weekly-chart">
@@ -499,6 +577,9 @@ const handleDeleteMeal = async (mealId) => {
     <p><strong>Food:</strong> {meal.foodName}</p>
     <p><strong>Quantity:</strong> {meal.quantity}g</p>
     <p><strong>Calories:</strong> {meal.calories} Kcal</p>
+    <p><strong>Protein:</strong> {Number(meal.protein || 0).toFixed(1)}g</p>
+<p><strong>Carbs:</strong> {Number(meal.carbs || 0).toFixed(1)}g</p>
+<p><strong>Fat:</strong> {Number(meal.fat || 0).toFixed(1)}g</p>
   </div>
 
   <div className="meal-actions">
