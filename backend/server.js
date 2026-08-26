@@ -99,23 +99,7 @@ const foodSchema = new mongoose.Schema({
     default: 0
   }
 });
-app.delete("/foods/delete-all", async (req, res) => {
-  try {
-    const result = await Food.deleteMany({});
 
-    res.json({
-      message: "All foods deleted successfully",
-      deletedCount: result.deletedCount
-    });
-  } catch (error) {
-    console.log("Delete foods error:", error);
-
-    res.status(500).json({
-      message: "Server error",
-      error: error.message
-    });
-  }
-});
 
 const Food = mongoose.model("Food", foodSchema);
   const mealSchema = new mongoose.Schema({
