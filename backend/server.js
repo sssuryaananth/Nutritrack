@@ -427,18 +427,37 @@ app.post("/meals", authMiddleware, async (req, res) => {
       });
     }
 
-    const calories =
-      (Number(food.calories) * Number(quantity)) / 100;
+    const caloriesPer100g = Number(
+  String(food.calories).replace("g", "").trim()
+);
 
-    const protein =
-      (Number(food.protein) || 0) * Number(quantity) / 100;
+const proteinPer100g = Number(food.protein || 0);
+const carbsPer100g = Number(food.carbs || 0);
+const fatPer100g = Number(food.fat || 0);
 
-    const carbs =
-      (Number(food.carbs) || 0) * Number(quantity) / 100;
+const newQuantity = Number(quantity);
 
-    const fat =
-      (Number(food.fat) || 0) * Number(quantity) / 100;
+const calories =
+  (caloriesPer100g * newQuantity) / 100;
 
+const protein =
+  (proteinPer100g * newQuantity) / 100;
+
+const carbs =
+  (carbsPer100g * newQuantity) / 100;
+
+const fat =
+  (fatPer100g * newQuantity) / 100;
+    if (
+  !Number.isFinite(calories) ||
+  !Number.isFinite(protein) ||
+  !Number.isFinite(carbs) ||
+  !Number.isFinite(fat)
+) {
+  return res.status(400).json({
+    message: "Invalid nutrition values for this food"
+  });
+}
     const newMeal = new Meal({
       userEmail: req.user.email,
       foodName: food.name,
@@ -537,10 +556,9 @@ app.put("/meals/:id", authMiddleware, async (req, res) => {
       });
     }
 
-    // Update quantity and recalculate calories
     if (req.body.quantity !== undefined) {
       const food = await Food.findOne({
-        name: meal.foodName
+        name: new RegExp(`^${meal.foodName}$`, "i")
       });
 
       if (!food) {
@@ -549,32 +567,44 @@ app.put("/meals/:id", authMiddleware, async (req, res) => {
         });
       }
 
-      const caloriesPer100g = Number(
-        food.calories.replace("g", "")
-      );
-
       const newQuantity = Number(req.body.quantity);
 
+      if (!newQuantity || newQuantity <= 0) {
+        return res.status(400).json({
+          message: "invalid quantity"
+        });
+      }
+
       meal.quantity = newQuantity;
-      meal.calories = (caloriesPer100g * newQuantity) / 100;
+
+      meal.calories =
+        (Number(food.calories) * newQuantity) / 100;
+
+      meal.protein =
+        (Number(food.protein || 0) * newQuantity) / 100;
+
+      meal.carbs =
+        (Number(food.carbs || 0) * newQuantity) / 100;
+
+      meal.fat =
+        (Number(food.fat || 0) * newQuantity) / 100;
     }
 
-    // Update meal type
     if (req.body.mealType !== undefined) {
       meal.mealType = req.body.mealType;
     }
 
     await meal.save();
 
-    return res.json({
-      message: "meal updated successfully",
+    res.json({
+      message: "Meal updated successfully",
       meal: meal
     });
 
   } catch (error) {
     console.log("meal update error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "server error",
       error: error.message
     });
