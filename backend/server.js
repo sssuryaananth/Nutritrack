@@ -99,6 +99,23 @@ const foodSchema = new mongoose.Schema({
     default: 0
   }
 });
+app.delete("/foods/delete-all", async (req, res) => {
+  try {
+    const result = await Food.deleteMany({});
+
+    res.json({
+      message: "All foods deleted successfully",
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.log("Delete foods error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
+  }
+});
 
 const Food = mongoose.model("Food", foodSchema);
   const mealSchema = new mongoose.Schema({
@@ -427,9 +444,14 @@ app.post("/meals", authMiddleware, async (req, res) => {
       });
     }
 
-    const caloriesPer100g = Number(
+    const caloriesPer100g = parseFloat(
   String(food.calories).replace("g", "").trim()
 );
+if(!Number.isFinite(caloriesPer100g)){
+  return res.status(400).json({
+    message:"This food has invalid calories data. Please update or recreate the food ."
+  });
+}
 
 const proteinPer100g = Number(food.protein || 0);
 const carbsPer100g = Number(food.carbs || 0);
