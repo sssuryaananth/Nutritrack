@@ -99,6 +99,47 @@ const foodSchema = new mongoose.Schema({
     default: 0
   }
 });
+app.post("/foods/seed", async (req, res) => {
+  try {
+    const foods = [
+      { name: "Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+      { name: "Chicken Leg", calories: 209, protein: 26, carbs: 0, fat: 11 },
+      { name: "Egg", calories: 155, protein: 13, carbs: 1.1, fat: 11 },
+      { name: "White Rice", calories: 130, protein: 2.7, carbs: 28, fat: 0.3 },
+      { name: "Chapati", calories: 297, protein: 11, carbs: 46, fat: 7 },
+      { name: "Milk", calories: 61, protein: 3.2, carbs: 4.8, fat: 3.3 },
+      { name: "Oats", calories: 389, protein: 16.9, carbs: 66.3, fat: 6.9 },
+      { name: "Banana", calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3 },
+      { name: "Apple", calories: 52, protein: 0.3, carbs: 13.8, fat: 0.2 },
+      { name: "Potato", calories: 77, protein: 2, carbs: 17.5, fat: 0.1 },
+      { name: "Sweet Potato", calories: 86, protein: 1.6, carbs: 20.1, fat: 0.1 },
+      { name: "Paneer", calories: 265, protein: 18.3, carbs: 6.1, fat: 20.8 },
+      { name: "Curd", calories: 61, protein: 3.5, carbs: 4.7, fat: 3.3 },
+      { name: "Dal", calories: 116, protein: 9, carbs: 20, fat: 0.4 },
+      { name: "Chickpeas", calories: 164, protein: 8.9, carbs: 27.4, fat: 2.6 },
+      { name: "Soya Chunks", calories: 345, protein: 52, carbs: 33, fat: 0.5 },
+      { name: "Bread", calories: 265, protein: 9, carbs: 49, fat: 3.2 },
+      { name: "Peanuts", calories: 567, protein: 25.8, carbs: 16.1, fat: 49.2 },
+      { name: "Fish", calories: 128, protein: 26, carbs: 0, fat: 2.7 },
+      { name: "Whey Protein", calories: 400, protein: 80, carbs: 8, fat: 6 }
+    ];
+
+    await Food.insertMany(foods);
+
+    res.status(201).json({
+      message: "Foods seeded successfully",
+      count: foods.length
+    });
+
+  } catch (error) {
+    console.log("Food seed error:", error);
+
+    res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
+  }
+});
 
 
 const Food = mongoose.model("Food", foodSchema);
