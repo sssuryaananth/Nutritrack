@@ -30,10 +30,10 @@ if (response.ok) {
   return (
     <div className="auth-page">
       <div className="auth-brand">
-        <div className="auth-logo">
-          <span className="logo-mark">N</span>
-          <span>NUTRITRACK</span>
-        </div>
+        <Link to="/" className="auth-logo">
+  <span className="logo-mark">N</span>
+  <span>NUTRITRACK</span>
+</Link>
 
         <p className="eyebrow">WELCOME BACK</p>
 

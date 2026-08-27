@@ -53,8 +53,10 @@ function Signup() {
 
       <div className="auth-brand">
         <div className="auth-logo">
-          <span className="logo-mark">N</span>
-          <span>NUTRITRACK</span>
+          <Link to="/" className="auth-logo">
+  <span className="logo-mark">N</span>
+  <span>NUTRITRACK</span>
+</Link>
         </div>
 
         <p className="eyebrow">START YOUR JOURNEY</p>
