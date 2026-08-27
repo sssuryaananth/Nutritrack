@@ -4,6 +4,12 @@ import Profile from "./pages/Profile";
 import { Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Signup from "./pages/Signup";
+import{
+  Utensils,
+  Flame,
+  Dumbbell,
+  BarChart3
+} from "lucide-react";
 
 function LandingPage() {
   return (
@@ -53,9 +59,24 @@ function LandingPage() {
               START TRACKING
             </Link>
 
-            <a href="#features" className="secondary-button">
-              EXPLORE MORE
-            </a>
+            <button
+  className="secondary-button explore-button"
+  onClick={() => {
+    document.body.classList.add("explore-active");
+
+    setTimeout(() => {
+      document.getElementById("features")?.scrollIntoView({
+        behavior: "smooth"
+      });
+
+      setTimeout(() => {
+        document.body.classList.remove("explore-active");
+      }, 800);
+    }, 250);
+  }}
+>
+  EXPLORE MORE
+</button>
           </div>
 
           <div className="hero-mini-stats">
@@ -146,7 +167,9 @@ function LandingPage() {
 
           <div className="feature-card">
             <div className="feature-number">01</div>
-            <div className="feature-icon">🍽️</div>
+            <div className="feature-icon">
+  <Utensils size={24} strokeWidth={1.8} />
+</div>
 
             <h3>Track Meals</h3>
 
@@ -159,7 +182,9 @@ function LandingPage() {
 
           <div className="feature-card">
             <div className="feature-number">02</div>
-            <div className="feature-icon">🔥</div>
+            <div className="feature-icon">
+  <Flame size={24} strokeWidth={1.8} />
+</div>
 
             <h3>Monitor Calories</h3>
 
@@ -172,7 +197,9 @@ function LandingPage() {
 
           <div className="feature-card">
             <div className="feature-number">03</div>
-            <div className="feature-icon">💪</div>
+            <div className="feature-icon">
+  <Dumbbell size={24} strokeWidth={1.8} />
+</div>
 
             <h3>Track Macros</h3>
 
@@ -185,7 +212,9 @@ function LandingPage() {
 
           <div className="feature-card">
             <div className="feature-number">04</div>
-            <div className="feature-icon">📊</div>
+            <div className="feature-icon">
+  <BarChart3 size={24} strokeWidth={1.8} />
+</div>
 
             <h3>Understand Progress</h3>
 
@@ -276,29 +305,61 @@ function LandingPage() {
 
 
       {/* FOOTER */}
-      <footer className="landing-footer">
+    <footer className="landing-footer">
 
-        <div className="footer-brand">
-          <Link to="/" className="logo">
-            <span className="logo-mark">N</span>
-            <span>NUTRITRACK</span>
-          </Link>
+  <div className="footer-column footer-brand">
+    <Link to="/" className="logo">
+      <span className="logo-mark">N</span>
+      <span>NUTRITRACK</span>
+    </Link>
 
-          <p>
-            Your body. Your data. Your control.
-          </p>
-        </div>
+    <p>
+      Your body. Your data. Your control.
+    </p>
+  </div>
 
-        <div className="footer-links">
-          <Link to="/login">LOG IN</Link>
-          <Link to="/signup">SIGN UP</Link>
-        </div>
 
-        <p className="copyright">
-          © 2026 NutriTrack. Built for better habits.
-        </p>
+  <div className="footer-column">
+    <h4>PRODUCT</h4>
 
-      </footer>
+    <Link to="/dashboard">Dashboard</Link>
+    <Link to="/profile">Profile</Link>
+    <Link to="/login">Log in</Link>
+  </div>
+
+
+  <div className="footer-column footer-message">
+    <h4>NUTRITRACK</h4>
+
+    <p>
+      Track your meals.
+      <br />
+      Understand your nutrition.
+      <br />
+      Improve every day.
+    </p>
+  </div>
+
+
+  <div className="copyright">
+  © 2026 NutriTrack.
+</div>
+
+<button
+  className="back-to-top"
+  onClick={() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }}
+  aria-label="Back to top"
+>
+  ↑
+</button>
+
+</footer>
+
 
     </div>
   );
