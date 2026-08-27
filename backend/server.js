@@ -298,32 +298,41 @@ app.put("/foods/:id", async (req, res) => {
   }
 });
 
-  app.post("/signup", async (req, res) => {
-  const newUser = req.body;
+  app.post("/signup",async (req,res)=>{
+    try{
+      const {name,email,password}=req.body;
 
-  const existingUser = await User.findOne({
-    email: newUser.email
+      if (!email || !password){
+        return res.status(400).json({
+          message:"email and password are required"
+        });
+      }
+      const existingUser = await User.findOne({
+        email:email
+      });
+      if(existingUser){
+        return res.status(400).json({
+          message:"email already exists"
+        });
+      }
+      const hashedPassword = await bcrypt.hash(password,10);
+      const user = new User({
+        name:name,
+        email:email,
+        password:hashedPassword
+      });
+      await user.save();
+      return res.status(201).json({
+        message:"account created successfully"
+      });
+    } catch(error){
+      console.log("signup error:",error);
+      return res.status(500).json({
+        message:"server error",
+        error:error.message
+      })
+    }
   });
-
-  if (existingUser) {
-    return res.status(400).json({
-      message: "email already exists"
-    });
-  }
-
-  const hashedPassword = await bcrypt.hash(newUser.password, 10);
-
-  const user = new User({
-    email: newUser.email,
-    password: hashedPassword
-  });
-
-  await user.save();
-
-  return res.status(201).json({
-    message: "Account Created Successfully"
-  });
-});
       app.post("/login", async (req, res) => {
   try {
     console.log("LOGIN BODY:", req.body);

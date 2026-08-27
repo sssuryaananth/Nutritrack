@@ -271,6 +271,15 @@
   font-weight: 700;
   cursor: pointer;
 }
+.auth-switch a {
+  color: #63ffae;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
 
 @media (max-width: 800px) {
   .auth-page {
