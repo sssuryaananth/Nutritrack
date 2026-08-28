@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserCircle, BarChart3 } from "lucide-react";
 import "./Dashboard.css";
 
 function Dashboard() {
-  console.log("NEW DASHBOARD CODE IS RUNNING ")
-  function Dashboard(){
-    alert("NEW DASHBOARD FILE");
-  }
+  
   const [user, setUser] = useState(null);
   const [foodName, setFoodName] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -321,6 +319,40 @@ const handleDeleteMeal = async (mealId) => {
 
   return (
     <div className="dashboard">
+      <div className="dashboard-navbar">
+
+  <div className="dashboard-brand">
+    <div className="dashboard-logo">
+      N
+    </div>
+
+    <span>NUTRITRACK</span>
+  </div>
+
+  <div className="dashboard-nav-actions">
+
+    <button
+      className="dashboard-nav-button"
+      onClick={() => {
+        // Analytics page will be added later
+        alert("Analytics coming soon!");
+      }}
+    >
+      <BarChart3 size={18} />
+      <span>ANALYTICS</span>
+    </button>
+
+    <button
+      className="dashboard-nav-button profile-nav-button"
+      onClick={() => navigate("/profile")}
+    >
+      <UserCircle size={20} />
+      <span>PROFILE</span>
+    </button>
+
+  </div>
+
+</div>
       <h1>
   Welcome back, {user?.name || "there"} 👋
 </h1>

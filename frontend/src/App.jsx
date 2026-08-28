@@ -4,6 +4,7 @@ import Profile from "./pages/Profile";
 import { Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Signup from "./pages/Signup";
+import tingSound from "./assets/ting.mp3.mp3";
 import{
   Utensils,
   Flame,
@@ -12,6 +13,15 @@ import{
 } from "lucide-react";
 
 function LandingPage() {
+  const playHoverSound = () => {
+  const audio = new Audio(tingSound);
+  audio.volume = 0.15;
+  audio.currentTime = 0;
+
+  audio.play().catch((error) => {
+    console.log("Sound error:", error);
+  });
+};
   return (
     <div className="app">
 
@@ -30,6 +40,8 @@ function LandingPage() {
 {/* MARQUEE */}
 <div className="marquee-wrapper">
   <div className="marquee">
+    <span>TRACK YOUR MEALS • KNOW YOUR NUTRITION • REACH YOUR GOALS •</span>
+    <span>TRACK YOUR MEALS • KNOW YOUR NUTRITION • REACH YOUR GOALS •</span>
     <span>TRACK YOUR MEALS • KNOW YOUR NUTRITION • REACH YOUR GOALS •</span>
     <span>TRACK YOUR MEALS • KNOW YOUR NUTRITION • REACH YOUR GOALS •</span>
   </div>
@@ -165,7 +177,7 @@ function LandingPage() {
 
         <div className="feature-grid">
 
-          <div className="feature-card">
+          <div className="feature-card" onMouseEnter={playHoverSound}>
             <div className="feature-number">01</div>
             <div className="feature-icon">
   <Utensils size={24} strokeWidth={1.8} />
@@ -180,7 +192,7 @@ function LandingPage() {
           </div>
 
 
-          <div className="feature-card">
+          <div className="feature-card" onMouseEnter={playHoverSound}>
             <div className="feature-number">02</div>
             <div className="feature-icon">
   <Flame size={24} strokeWidth={1.8} />
@@ -195,7 +207,7 @@ function LandingPage() {
           </div>
 
 
-          <div className="feature-card">
+          <div className="feature-card" onMouseEnter={playHoverSound}>
             <div className="feature-number">03</div>
             <div className="feature-icon">
   <Dumbbell size={24} strokeWidth={1.8} />
@@ -210,7 +222,7 @@ function LandingPage() {
           </div>
 
 
-          <div className="feature-card">
+          <div className="feature-card" onMouseEnter={playHoverSound}>
             <div className="feature-number">04</div>
             <div className="feature-icon">
   <BarChart3 size={24} strokeWidth={1.8} />

@@ -1,104 +1,274 @@
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
+}
 
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101418;
+  color: #f5f7fa;
 }
-body{
-  margin:0;
-  font-family: arial,sans-serif;
-  background:#f4f6f8;
-}
+
 .dashboard {
   min-height: 100vh;
-  padding: 30px;
-  max-width: 1100px;
+  padding: 40px 7%;
+  max-width: 1250px;
   margin: auto;
-  color: #222;
+  color: #f5f7fa;
 }
+
+/* =========================
+   HEADINGS
+========================= */
 
 .dashboard h1,
 .dashboard h2,
 .dashboard h3,
 .dashboard p,
 .dashboard label {
-  color: #222;
+  color: #f5f7fa;
 }
-h1{
-  margin-top:0;
-}
+
 .dashboard h1 {
-  font-size: 36px;
-  margin-bottom: 10px;
-  color: #1f2937;
+  margin: 0;
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -1.5px;
 }
 
 .dashboard h2 {
-  margin-top: 30px;
-  color: #374151;
-}
-.dashboard input,
-.dashboard select {
-  padding: 10px 12px;
-  margin: 5px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 15px;
+  margin-top: 0;
 }
 
-.dashboard button {
-  padding: 10px 16px;
+.dashboard h3 {
+  margin-top: 0;
+}
+
+/* =========================
+   DASHBOARD HEADER
+========================= */
+
+.dashboard-header {
+  background:
+    radial-gradient(
+      circle at 85% 20%,
+      rgba(99, 255, 174, 0.12),
+      transparent 30%
+    ),
+    #141a1f;
+
+  padding: 30px;
+  border: 1px solid #293239;
+  border-radius: 18px;
+  margin-bottom: 25px;
+
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================
+   CALORIE STATS
+========================= */
+
+.calorie-stats {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 16px;
+  margin: 25px 0;
+}
+
+/* =========================
+   STAT CARD
+========================= */
+
+.stat-card {
+  background: #141a1f;
+  border: 1px solid #293239;
+  padding: 24px;
+  border-radius: 16px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: #63ffae;
+}
+
+.stat-card p {
+  margin: 0 0 12px;
+  color: #8f9aa4;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.stat-card h2 {
+  margin: 0;
+  color: #63ffae;
+  font-size: 30px;
+}
+
+/* =========================
+   MACRO STATS
+========================= */
+
+.macro-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.macro-stats .stat-card h2 {
+  font-size: 26px;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress-container {
+  background:
+    linear-gradient(
+      135deg,
+      #141a1f,
+      #11171b
+    );
+
+  padding: 25px;
+  margin: 20px 0 30px;
+
+  border: 1px solid #293239;
+  border-radius: 16px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  color: #c5cbd1;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.progress-label span:last-child {
+  color: #63ffae;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+
+  background: #252e34;
+
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+
+  background: #63ffae;
+
+  border-radius: inherit;
+
+  box-shadow: 0 0 14px rgba(99, 255, 174, 0.35);
+
+  transition: width 0.5s ease;
+}
+
+/* =========================
+   SECTION CARDS
+========================= */
+
+.section-card,
+.profile-card {
+  background: #141a1f;
+
+  padding: 28px;
+  margin: 25px 0;
+
+  border: 1px solid #293239;
+  border-radius: 16px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.section-card h2,
+.profile-card h2 {
+  margin-top: 0;
+  color: #f5f7fa;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.dashboard input,
+.dashboard select {
+  padding: 13px 14px;
   margin: 5px;
+
+  border: 1px solid #303a42;
+  border-radius: 8px;
+
+  outline: none;
+
+  background: #1a2127;
+  color: #f5f7fa;
+
+  font-size: 15px;
+
+  transition: border-color 0.2s ease;
+}
+
+.dashboard input:focus,
+.dashboard select:focus {
+  border-color: #63ffae;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.dashboard button {
+  padding: 12px 18px;
+  margin: 5px;
+
   border: none;
-  border-radius: 6px;
-  background: #2563eb;
-  color: white;
-  font-size: 14px;
+  border-radius: 8px;
+
+  background: #63ffae;
+  color: #101418;
+
+  font-size: 13px;
+  font-weight: 800;
+
   cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .dashboard button:hover {
-  background: #1d4ed8;
-}
-.dashboard-header {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-.meal-card {
-  background: white;
-  padding: 20px;
-  margin: 15px 0;
-  border-radius: 12px;
-}
-.section-card {
-  background: white;
-  padding: 25px;
-  margin: 25px 0;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 18px rgba(99, 255, 174, 0.2);
 }
 
-.section-card h2 {
-  margin-top: 0;
-}
-.profile-card {
-  background: white;
-  padding: 25px;
-  margin: 25px 0;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-}
-
-.profile-card h2 {
-  margin-top: 0;
-  margin-bottom: 8px;
-}
-
-.profile-card p {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
+/* =========================
+   GOAL SECTION
+========================= */
 
 .goal-section {
   display: flex;
@@ -106,104 +276,106 @@ h1{
   gap: 10px;
   flex-wrap: wrap;
 }
-.calorie-stats {
-  display: flex;
-  gap: 20px;
-  margin: 25px 0;
-  flex-wrap: wrap;
-}
 
-.stat-card {
-  flex: 1;
-  min-width: 200px;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-}
+/* =========================
+   MEAL CARDS
+========================= */
 
-.stat-card p {
-  margin: 0 0 10px;
-  color: #6b7280;
-}
-
-.stat-card h2 {
-  margin: 0;
-  color: #2563eb;
-}
 .meal-card {
-  background: white;
-  padding: 20px;
+  background:
+    linear-gradient(
+      145deg,
+      #161d22,
+      #12181c
+    );
+
+  padding: 22px;
+
   margin: 15px 0;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+
+  border: 1px solid #293239;
+  border-radius: 14px;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.meal-card:hover {
+  transform: translateY(-2px);
+  border-color: #3b494f;
 }
 
 .meal-card h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
+
+  color: #63ffae;
+
+  font-size: 18px;
+}
+
+.meal-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
 .meal-details p {
-  margin: 8px 0;
+  margin: 0;
+
+  color: #9da8b3;
+
+  font-size: 14px;
 }
+
+.meal-details strong {
+  color: #f5f7fa;
+}
+
+/* =========================
+   MEAL ACTIONS
+========================= */
 
 .meal-actions {
   display: flex;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .delete-btn {
-  background: #dc2626;
+  background: #e05252 !important;
+  color: white !important;
 }
 
 .delete-btn:hover {
-  background: #b91c1c;
-}
-.progress-container {
-  background: white;
-  padding: 20px;
-  margin: 20px 0 25px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 5px 18px rgba(224, 82, 82, 0.2) !important;
 }
 
-.progress-label {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
+/* =========================
+   WEEKLY CHART
+========================= */
 
-.progress-bar {
-  width: 100%;
-  height: 14px;
-  background: #e5e7eb;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0;
-  background: #2563eb;
-  border-radius: 10px;
-  transition: width 0.4s ease;
-}
 .weekly-chart {
   display: flex;
   align-items: flex-end;
+
   gap: 15px;
+
   height: 260px;
+
   padding: 30px 10px 10px;
 }
 
 .chart-column {
   flex: 1;
+
   height: 100%;
+
   display: flex;
   flex-direction: column;
+
   justify-content: flex-end;
   align-items: center;
 }
@@ -211,23 +383,228 @@ h1{
 .chart-bar {
   width: 100%;
   max-width: 55px;
+
   min-height: 3px;
-  background: #2563eb;
-  border-radius: 8px 8px 0 0;
+
+  background: #63ffae;
+
+  border-radius: 8px 8px 3px 3px;
+
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 5px;
-  transition: height 0.3s ease;
+
+  padding-top: 6px;
+
+  transition:
+    height 0.3s ease,
+    transform 0.2s ease;
+
+  box-shadow: 0 0 15px rgba(99, 255, 174, 0.12);
+}
+
+.chart-bar:hover {
+  transform: scaleY(1.03);
 }
 
 .chart-bar span {
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
+  color: #101418;
+
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .chart-column p {
   margin: 8px 0 0;
+
+  color: #8f9aa4;
+
   font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-card p {
+  color: #9da8b3;
+  margin-top: 0;
+}
+
+/* =========================
+   EMPTY STATES
+========================= */
+
+.dashboard .section-card > p {
+  color: #8f9aa4;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+  .dashboard {
+    padding: 30px 6%;
+  }
+
+  .calorie-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .macro-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .meal-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+
+  .dashboard {
+    padding: 25px 5%;
+  }
+
+  .dashboard-header {
+    padding: 22px;
+  }
+
+  .macro-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .meal-details {
+    grid-template-columns: 1fr;
+  }
+
+  .weekly-chart {
+    gap: 7px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .chart-bar {
+    max-width: 35px;
+  }
+
+  .chart-bar span {
+    font-size: 9px;
+  }
+}
+/* ============================= */
+/* DASHBOARD NAVBAR */
+/* ============================= */
+
+.dashboard-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 22px;
+  margin-bottom: 30px;
+
+  background: #141a1f;
+  border: 1px solid #2b353d;
+  border-radius: 14px;
+}
+
+/* BRAND */
+
+.dashboard-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  color: #f5f7fa;
+
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.dashboard-logo {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #63ffae;
+  border-radius: 50%;
+
+  color: #63ffae;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* NAV ACTIONS */
+
+.dashboard-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-nav-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 13px;
+
+  border: 1px solid #303a42;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #9da8b3;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.dashboard-nav-button:hover {
+  border-color: #63ffae;
+  color: #63ffae;
+}
+
+.profile-nav-button {
+  color: #f5f7fa;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .dashboard-navbar {
+    padding: 15px;
+  }
+
+  .dashboard-brand span {
+    display: none;
+  }
+
+  .dashboard-nav-button span {
+    display: none;
+  }
+
+  .dashboard-nav-button {
+    width: 38px;
+    height: 38px;
+
+    padding: 0;
+
+    justify-content: center;
+  }
+
 }
